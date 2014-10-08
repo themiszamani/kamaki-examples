@@ -20,6 +20,7 @@ python createvm.py -c 2 -m 2048 -d 10 -s drbd
 -s, choices=["drbd", "ext_archipelago"], "The storage type"
 -i, default='Debian Base', "the image name (e.g. Debian Base)"
 -n, "The vm name"
+```
 
 ### Python script
 
