@@ -27,6 +27,8 @@ python pithos.py
 - BIGFILE=The name of the big file in test folder (e.g. big.txt).
 - TMPFILE=The name of the tmp file needed to store the downloaded file (located in the test folder).
 - FILETOPUBLISH=The name of the file you want to publish. 
+- YOUR_CONTAINER = The name of the container with fodlers
+- YOUR_FOLDER_PATH = The folders path in a container  
 
 
 ### Pithos Examples
@@ -35,7 +37,8 @@ python pithos.py
 - Getting Endpoints for pithos
 - Authenticating to Pithos
 - List all containers in the account provided
-- Print objects for all containers
+- Print objects of all containers
+- Print objects of a folder in a container. First create a folder in a container.
 - Upload and download (small, and big file) 
 - Create a new container and move object
 - Delete and recover

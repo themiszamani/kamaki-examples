@@ -13,10 +13,12 @@ deactivate('kamaki.clients.recv')
 #TOKEN = 'YOUR TOKEN'
 AUTHENTICATION_URL = 'https://accounts.demo.synnefo.org/identity/v2.0'
 TOKEN = 'YOUR TOKEN'
-SMALLFILE='A NAME OF A SMALL FILE (in test folder)'
-BIGFILE='A NAME OF A BIG FILE (in test folder)'
-TMPFILE='A NAME OF A TMP FILE (in test folder)'
-FILETOPUBLISH='THE NAME OF THE FILE YOU WANT TO PUBLISH (in test folder)'
+SMALLFILE = 'A NAME OF A SMALL FILE (in test folder)'
+BIGFILE = 'A NAME OF A BIG FILE (in test folder)'
+TMPFILE = 'A NAME OF A TMP FILE (in test folder)'
+FILETOPUBLISH = 'THE NAME OF THE FILE YOU WANT TO PUBLISH (in test folder)'
+YOUR_CONTAINER = 'THE NAME OF THE CONTAINER WITH FOLDERS'
+YOUR_FOLDER_PATH = 'THE FOLDER(S) PATH IN A CONTAINER'
 
 try:
     from progress.bar import Bar
@@ -55,17 +57,20 @@ def parseContainers(decoded_response):
     return containers
 
 
-def PrintContainerObjects(pithos, containerName):
+def PrintContainerObjects(pithos, containerName, prefixName=None):
     """
     function to print the objects of a container
     Args
         param pithos: (object) initialization PithosClient
         param containerName: (string) the container name
-    """
+        param prefixName: (string) Return objects starting with this
+        prefix. It is actually the folder path of the object, used
+        in pithos.list_objects.
+   """
     pithos.container = containerName
     print "------------"
     print "Printing objects of container:", containerName
-    obj_list = pithos.list_objects()
+    obj_list = pithos.list_objects(prefix=prefixName)
     for obj in obj_list:
         print 'Name:  %s of %s bytes' % (obj['name'], obj['bytes'])
 
@@ -122,6 +127,17 @@ def main():
         print ','.join(containers)
     except ClientError:
         print"Error in container list"
+
+    print"\n"
+    print"---------------------------------------------------"
+    print"******LIST OBJECTS OF A FOLDER IN A CONTAINER******"
+    print"---------------------------------------------------"
+    #list all containers
+    try:
+        PrintContainerObjects(pithos, YOUR_CONTAINER,
+                              prefixName=YOUR_FOLDER_PATH)
+    except ClientError:
+        print"Error in listing folder objects"
 
     print"\n"
     print"---------------------------------------------------"
