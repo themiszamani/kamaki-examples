@@ -1,1 +1,1 @@
-kamaki-examples1
+kamaki-examples1-test
