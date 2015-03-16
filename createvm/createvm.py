@@ -93,9 +93,9 @@ def authenticate_clients():
         print 'Failed to authenticate user token'
     try:
         endpoints = astakos_client.get_endpoints()
-        cyclades_base_url = parseAstakosEndpoints(endpoints,
+        cyclades_base_url = parse_astakos_endpoints(endpoints,
                                                   'cyclades_compute')
-        cyclades_network_base_url = parseAstakosEndpoints(endpoints,
+        cyclades_network_base_url = parse_astakos_endpoints(endpoints,
                                                           'cyclades_network')
 
     except ClientError:
@@ -110,7 +110,7 @@ def authenticate_clients():
         print 'Failed to initialize Cyclades client'
 
 
-def parseNetwork(decoded_response, itemToSearch):
+def parse_network(decoded_response, itemToSearch):
     """function to parse the endpoints and get the
     publicURL of the selected service
     """
@@ -121,7 +121,7 @@ def parseNetwork(decoded_response, itemToSearch):
     return networkId
 
 
-def checkAllQuotas(quotas, tocheck):
+def check_all_quotas(quotas, tocheck):
     """
     function to check the quotas left
     @ the selected to check service
@@ -143,7 +143,7 @@ def checkAllQuotas(quotas, tocheck):
         return ToCheckResult
 
 
-def parseAstakosEndpoints(decoded_response, itemToSearch):
+def parse_astakos_endpoints(decoded_response, itemToSearch):
     """
     function to parse the endpoints and get the publicURL
     endpoint of the selected service
@@ -165,7 +165,7 @@ def parseAstakosEndpoints(decoded_response, itemToSearch):
                 return PUBLIC_URL
 
 
-def getImageID(compute_client, image_name):
+def get_image_id(compute_client, image_name):
     """ gets list of images from compute client
     then pick the one we need
     Args
@@ -182,7 +182,7 @@ def getImageID(compute_client, image_name):
     return -1
 
 
-def getFlavorID(compute_client, args):
+def get_flavor_id(compute_client, args):
     """ gets full flavor list from compute client
     then synthesized name to pick
     Args
@@ -200,7 +200,7 @@ def getFlavorID(compute_client, args):
     return -1
 
 
-def getFloatingIP(network_client, IpCheck):
+def get_floating_ip(network_client, IpCheck):
     """
     get a floating ip to attach to the newly created
     server. Gets the floating ip list , checks if
@@ -236,7 +236,7 @@ def getFloatingIP(network_client, IpCheck):
         try:
             NewIP = network_client.create_floatingip(networkID)
         except:
-            print('getFloatingIP - Failed to create a new ip')
+            print('get_floating_ip - Failed to create a new ip')
             exit()
     return NewIP
 
@@ -256,30 +256,30 @@ def main():
     cyclades, compute, network_client, astakos_client = authenticate_clients()
     allQuotas = astakos_client.get_quotas()
 
-    VmCheck = checkAllQuotas(allQuotas, 'cyclades.vm')
+    VmCheck = check_all_quotas(allQuotas, 'cyclades.vm')
     print "Vm left:", VmCheck
     if VmCheck == 0:
         print "ERROR - No VM available in the pool"
         return 1
 
-    IpCheck = checkAllQuotas(allQuotas, 'cyclades.floating_ip')
-    floatingIP = getFloatingIP(network_client, IpCheck)
+    IpCheck = check_all_quotas(allQuotas, 'cyclades.floating_ip')
+    floatingIP = get_floating_ip(network_client, IpCheck)
     if IpCheck == 0 and floatingIP is None:
         print "ERROR - No IP available in the pool"
         return 1
-    DiskCheck = checkAllQuotas(allQuotas, 'cyclades.disk')
+    DiskCheck = check_all_quotas(allQuotas, 'cyclades.disk')
     print "DiskCheck availability", DiskCheck
     print "disk   ", args.disk
     if DiskCheck < 1024*1024*1024*8*args.disk:
         print "ERROR - The disk is not available"
         return 1
 
-    RamCheck = checkAllQuotas(allQuotas, 'cyclades.ram')
+    RamCheck = check_all_quotas(allQuotas, 'cyclades.ram')
     print "RamCheck availability", RamCheck
     if RamCheck < args.memory:
         print "ERROR - The selected number of memory are not available"
         return 1
-    CPUCheck = checkAllQuotas(allQuotas, 'cyclades.cpu')
+    CPUCheck = check_all_quotas(allQuotas, 'cyclades.cpu')
     print "CPUCheck availability", CPUCheck
     if CPUCheck < args.cpuid:
         print "ERROR - The selected number of CPU are not available"
@@ -290,11 +290,11 @@ def main():
     adminPass_f = open(pass_fname, 'w')
 
     # select a flavor
-    flavor_id = getFlavorID(compute, args)
+    flavor_id = get_flavor_id(compute, args)
     print "The flavor id =", flavor_id
 
     # select debian base id
-    img_id = getImageID(compute, args.image)
+    img_id = get_image_id(compute, args.image)
     print "The image id =", img_id
 
     print "The floating ip =", floatingIP['floating_ip_address']
