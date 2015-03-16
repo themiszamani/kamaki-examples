@@ -273,7 +273,7 @@ def main():
     print "file         ---", args.filename
     print "container    ---", args.container
 
-    if (args.typeof == 'uploadfile'):
+    if args.typeof == 'uploadfile':
         filename = args.filename
         container = args.container
         pithos.container = container
@@ -297,16 +297,16 @@ def main():
     block_size = int(meta['x-container-block-size'])
     CHUNK = block_size*4
 
-    if (args.typeof == 'uploadBfile'):
+    if args.typeof == 'uploadBfile':
         filename = args.filename
         filenameToSave = filename
         uploadBfile(pithos, filename, meta, CHUNK)
 
-    if (args.typeof == 'uploadurl'):
+    if args.typeof == 'uploadurl':
         url = args.url
         uploadurl(pithos, url, meta, CHUNK)
 
-    if (args.typeof == 'download'):
+    if args.typeof == 'download':
         filename = args.filename
         ObjectData = pithos.get_object_info(filename)
         size = int(ObjectData['content-length'])
@@ -315,14 +315,14 @@ def main():
             pithos.download_object(filename, f,
                                    download_cb=create_pb('Downloading...'))
 
-    if (args.typeof == 'downloadBig'):
+    if args.typeof == 'downloadBig':
         filename = args.filename
         ObjectData = pithos.get_object_info(filename)
         size = int(ObjectData['content-length'])
         filenameToSave = filename
         downloadBig(pithos, filename, CHUNK, filenameToSave, size)
 
-    if (args.typeof == 'downloadSendBig'):
+    if args.typeof == 'downloadSendBig':
         filename = args.filename
         ObjectData = pithos.get_object_info(filename)
         size = int(ObjectData['content-length'])
