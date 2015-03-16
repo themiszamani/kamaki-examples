@@ -31,10 +31,10 @@ except ImportError:
 
 def parse_arguments(args):
     parser = argparse.ArgumentParser(description="Upload and download files")
-    parser.add_argument("-t", "--typeof", type=str, default="downloadBig",
+    parser.add_argument("-t", "--typeof", type=str, default="download_big",
                         dest="typeof",
-                        help="type of action upload, uploadBfile, "
-                        "uploadurl,download,downloadBig")
+                        help="type of action upload, upload_b_file, "
+                        "uploadurl,download,download_big")
     parser.add_argument("-u", "--url", type=str, default='',
                         dest='url',
                         help="the url of the file to upload")
@@ -45,7 +45,7 @@ def parse_arguments(args):
                         dest='container',
                         help="the name of the container to upload to")
     args = parser.parse_args()
-    if args.typeof == 'downloadBig' and args.filename == '' and args.container == '':
+    if args.typeof == 'download_big' and args.filename == '' and args.container == '':
         print >>sys.stderr, "The -f --filename, -c --container container name "
         print >>sys.stderr, "arguments is mandatory so as to download a file."
         parser.print_help()
@@ -66,7 +66,7 @@ def parse_arguments(args):
         print >>sys.stderr, "arguments is mandatory so as to upload a file."
         parser.print_help()
         sys.exit(1)
-    elif args.typeof == 'uploadBfile' and args.container == '' and args.filename == '':
+    elif args.typeof == 'upload_b_file' and args.container == '' and args.filename == '':
         print >>sys.stderr, "The -f --filename, -c --container container name "
         print >>sys.stderr, "arguments is mandatory so as to upload a file."
         parser.print_help()
@@ -103,7 +103,7 @@ def download_and_send(pithos, filename, CHUNK, filenameToSave, size):
     print("Elapsed time was %g seconds" % (end_time - start_time))
 
 
-def downloadBig(size, pithos, filename, CHUNK):
+def download_big(size, pithos, filename, CHUNK):
     '''Downloads chunk of the object and write to a file.
     The download_to_string method downloads a remote object from pithos into a
     string, which is then returned. Download an object to a string
@@ -147,7 +147,7 @@ def _pithos_hash(block, blockhash):
     return h.hexdigest()
 
 
-def uploadBfile(pithos, filename, meta, CHUNK):
+def upload_b_file(pithos, filename, meta, CHUNK):
     block_size = int(meta['x-container-block-size'])
     block_hash_algorithm = meta['x-container-block-hash']
     spinner = Spinner('Uploading blocks: ')
@@ -297,10 +297,10 @@ def main():
     block_size = int(meta['x-container-block-size'])
     CHUNK = block_size*4
 
-    if args.typeof == 'uploadBfile':
+    if args.typeof == 'upload_b_file':
         filename = args.filename
         filenameToSave = filename
-        uploadBfile(pithos, filename, meta, CHUNK)
+        upload_b_file(pithos, filename, meta, CHUNK)
 
     if args.typeof == 'uploadurl':
         url = args.url
@@ -315,12 +315,12 @@ def main():
             pithos.download_object(filename, f,
                                    download_cb=create_pb('Downloading...'))
 
-    if args.typeof == 'downloadBig':
+    if args.typeof == 'download_big':
         filename = args.filename
         ObjectData = pithos.get_object_info(filename)
         size = int(ObjectData['content-length'])
         filenameToSave = filename
-        downloadBig(pithos, filename, CHUNK, filenameToSave, size)
+        download_big(pithos, filename, CHUNK, filenameToSave, size)
 
     if args.typeof == 'downloadSendBig':
         filename = args.filename
