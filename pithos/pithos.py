@@ -37,7 +37,7 @@ except ImportError:
         return None
 
 
-def parseContainers(decoded_response):
+def parse_containers(decoded_response):
     """
     function to parse the endpoints and get
     the publicURL of the selected service
@@ -57,7 +57,7 @@ def parseContainers(decoded_response):
     return containers
 
 
-def PrintContainerObjects(pithos, containerName, prefixName=None):
+def print_container_objects(pithos, containerName, prefixName=None):
     """
     function to print the objects of a container
     Args
@@ -120,7 +120,7 @@ def main():
     #list all containers
     try:
         container_list = pithos.list_containers()
-        containers = parseContainers(container_list)
+        containers = parse_containers(container_list)
         ContNums = len(containers)
         print "The number of Containers in your account:", ContNums
         print "The containers are"
@@ -134,7 +134,7 @@ def main():
     print"---------------------------------------------------"
     #list all containers
     try:
-        PrintContainerObjects(pithos, YOUR_CONTAINER,
+        print_container_objects(pithos, YOUR_CONTAINER,
                               prefixName=YOUR_FOLDER_PATH)
     except ClientError:
         print"Error in listing folder objects"
@@ -146,7 +146,7 @@ def main():
 
     try:
         for i in range(len(containers)):
-            PrintContainerObjects(pithos, containers[i])
+            print_container_objects(pithos, containers[i])
     except ClientError as e:
         print('Error: %s' % e)
         if e.status:
