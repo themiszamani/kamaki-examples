@@ -1,2 +1,2 @@
-kamaki-examples1-test23
+kamaki-examples
 1
