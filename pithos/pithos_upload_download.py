@@ -5,7 +5,7 @@ from time import gmtime, strftime
 import time
 from kamaki.clients import SilentEvent
 from kamaki.clients import ClientError
-from progress.spinner import Spinner
+from progress.spinner import SpinnerD
 import requests
 import sys
 import argparse
@@ -85,7 +85,7 @@ def stream(i, filenameToSave, bufs):
         f.write(bufs[i])
 
 
-def downloadAndSend(pithos, filename, CHUNK, filenameToSave, size):
+def download_and_send(pithos, filename, CHUNK, filenameToSave, size):
     bufs = {}
     proc = ''
     print strftime("%Y-%m-%d %H:%M:%S", gmtime())
@@ -327,7 +327,7 @@ def main():
         ObjectData = pithos.get_object_info(filename)
         size = int(ObjectData['content-length'])
         filenameToSave = filename
-        downloadAndSend(pithos, filename, CHUNK, filenameToSave, size)
+        download_and_send(pithos, filename, CHUNK, filenameToSave, size)
 
 if __name__ == '__main__':
     sys.exit(main())
